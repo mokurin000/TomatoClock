@@ -1,5 +1,8 @@
 import os
 import sys
+from typing import Self
+from importlib import resources
+
 
 from PySide6.QtWidgets import (
     QApplication,
@@ -12,8 +15,10 @@ from PySide6.QtWidgets import (
     QSpinBox,
     QDialogButtonBox,
 )
+from PySide6.QtGui import QIcon
 from PySide6.QtCore import QTimer, Qt, QSettings
-from typing import Self
+
+import tomatoclock
 
 
 class TomatoStorage:
@@ -194,7 +199,10 @@ class TomatoClock(QWidget):
 
 
 if __name__ == "__main__":
+    icon_path = resources.files(tomatoclock) / "tomato.ico"
+
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon(str(icon_path)))
     window = TomatoClock()
     window.show()
     sys.exit(app.exec())
