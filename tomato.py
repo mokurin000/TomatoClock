@@ -12,7 +12,24 @@ from PySide6.QtWidgets import (
     QSpinBox,
     QDialogButtonBox,
 )
-from PySide6.QtCore import QTimer, Qt
+from PySide6.QtCore import QTimer, Qt, QSettings
+from typing import Self
+
+
+class TomatoStorage:
+    def __init__(self):
+        self._settings = QSettings("mokurin000", "TomatoClock", None)
+        self.work_time = None
+        self.break_time = None
+
+    def __enter__(self) -> Self:
+        self.work_time = self._settings.value("work-time") or 25 * 60
+        self.break_time = self._settings.value("break-time") or 5 * 60
+        return self
+
+    def __exit__(self, _type, _value, _traceback):
+        self._settings.setValue("work-time", self.work_time)
+        self._settings.setValue("break-time", self.break_time)
 
 
 class SettingsDialog(QDialog):
@@ -54,8 +71,11 @@ class SettingsDialog(QDialog):
 class TomatoClock(QWidget):
     def __init__(self):
         super().__init__()
-        self.work_time = 25 * 60  # 初始工作时间（秒）
-        self.break_time = 5 * 60  # 初始休息时间（秒）
+
+        with TomatoStorage() as storage:
+            self.work_time = storage.work_time
+            self.break_time = storage.break_time
+
         self.remaining_time = self.work_time
         self.is_working = True
         self.is_running = False
@@ -164,6 +184,13 @@ class TomatoClock(QWidget):
                 winsound.PlaySound("*", winsound.SND_ALIAS | winsound.SND_ASYNC)
             case _:
                 QApplication.beep()
+
+    def closeEvent(self, event):
+        with TomatoStorage() as storage:
+            storage.work_time = self.work_time
+            storage.break_time = self.break_time
+
+        return super().closeEvent(event)
 
 
 if __name__ == "__main__":
