@@ -10,7 +10,7 @@ class TomatoClock(QWidget):
         self,
     ):
         super().__init__()
-        self.work_time = 3  # 1分钟
+        self.work_time = 25 * 60  # 25分钟
         self.break_time = 5 * 60  # 5分钟
         self.remaining_time = self.work_time
         self.is_working = True
@@ -54,6 +54,8 @@ class TomatoClock(QWidget):
         self.start_btn.setText("暂停" if self.is_running else "继续")
         if self.is_running:
             self.timer.start(1000)
+        else:
+            self.timer.stop()
 
     def update_timer(self):
         if self.remaining_time > 0:
@@ -65,10 +67,7 @@ class TomatoClock(QWidget):
     def switch_period(self):
         self.play_notice_sound()
         self.is_working = not self.is_working
-        self.remaining_time = self.break_time if self.is_working else self.work_time
-        self.is_running = False
-        self.timer.stop()
-        self.start_btn.setText("开始")
+        self.remaining_time = self.break_time if not self.is_working else self.work_time
         self.update_display()
 
     def reset_timer(self):
