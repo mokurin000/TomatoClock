@@ -1,6 +1,5 @@
 import os
 import sys
-from typing import Self
 from importlib import resources
 
 
@@ -10,67 +9,14 @@ from PySide6.QtWidgets import (
     QLabel,
     QPushButton,
     QVBoxLayout,
-    QHBoxLayout,
     QDialog,
-    QSpinBox,
-    QDialogButtonBox,
 )
 from PySide6.QtGui import QIcon
-from PySide6.QtCore import QTimer, Qt, QSettings
+from PySide6.QtCore import QTimer, Qt
 
 import tomatoclock
-
-
-class TomatoStorage:
-    def __init__(self):
-        self._settings = QSettings("mokurin000", "TomatoClock", None)
-        self.work_time = None
-        self.break_time = None
-
-    def __enter__(self) -> Self:
-        self.work_time = self._settings.value("work-time") or 25 * 60
-        self.break_time = self._settings.value("break-time") or 5 * 60
-        return self
-
-    def __exit__(self, _type, _value, _traceback):
-        self._settings.setValue("work-time", self.work_time)
-        self._settings.setValue("break-time", self.break_time)
-
-
-class SettingsDialog(QDialog):
-    def __init__(self, parent=None, work_time=25, break_time=5):
-        super().__init__(parent)
-        self.setWindowTitle("设置")
-        layout = QVBoxLayout()
-
-        # 工作时间设置
-        work_layout = QHBoxLayout()
-        work_label = QLabel("工作时间（分钟）:")
-        self.work_spin = QSpinBox()
-        self.work_spin.setRange(1, 60)
-        self.work_spin.setValue(work_time)
-        work_layout.addWidget(work_label)
-        work_layout.addWidget(self.work_spin)
-
-        # 休息时间设置
-        break_layout = QHBoxLayout()
-        break_label = QLabel("休息时间（分钟）:")
-        self.break_spin = QSpinBox()
-        self.break_spin.setRange(1, 60)
-        self.break_spin.setValue(break_time)
-        break_layout.addWidget(break_label)
-        break_layout.addWidget(self.break_spin)
-
-        # 按钮组
-        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        button_box.accepted.connect(self.accept)
-        button_box.rejected.connect(self.reject)
-
-        layout.addLayout(work_layout)
-        layout.addLayout(break_layout)
-        layout.addWidget(button_box)
-
-        self.setLayout(layout)
+from tomatoclock.storage import TomatoStorage
+from tomatoclock.settings import SettingsDialog
 
 
 class TomatoClock(QWidget):
