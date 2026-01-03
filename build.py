@@ -24,7 +24,6 @@ PyInstaller.__main__.run(
         "--name=TomatoClock",
         "--noconsole",
         "--optimize=2",
-        "-s",
         "--collect-data=tomatoclock",
         "--icon=./src/tomatoclock/tomato.ico",
     ]
