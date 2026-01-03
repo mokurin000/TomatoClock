@@ -3,5 +3,21 @@ name = "tomatoclock"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.8"
-dependencies = []
+requires-python = ">=3.10"
+dependencies = ["pyinstaller>=6.17.0", "pyside6>=6.6.3.1"]
+
+[tool.uv]
+package = true
+
+[tool.uv.workspace]
+members = [
+    ".",
+]
+
+[tool.uv.sources]
+tomatoclock = { workspace = true, editable = true }
+
+[dependency-groups]
+dev = [
+    "tomatoclock",
+]
