@@ -4,20 +4,16 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["pyinstaller>=6.17.0", "pyside6>=6.6.3.1"]
+dependencies = ["pyinstaller>=6.17.0"]
 
 [tool.uv]
 package = true
 
 [tool.uv.workspace]
-members = [
-    ".",
-]
+members = ["."]
 
 [tool.uv.sources]
 tomatoclock = { workspace = true, editable = true }
 
 [dependency-groups]
-dev = [
-    "tomatoclock",
-]
+dev = ["tomatoclock"]

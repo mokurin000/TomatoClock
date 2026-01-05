@@ -1,18 +1,29 @@
-from typing import Self
-from PySide6.QtCore import QSettings
+# storage.py
+import json
+import os
+from typing import Tuple
+
+SETTINGS_FILE = os.path.expanduser("~/.tomatoclock_settings.json")
+
+DEFAULT_WORK = 25 * 60
+DEFAULT_BREAK = 5 * 60
 
 
-class TomatoStorage:
-    def __init__(self):
-        self._settings = QSettings("mokurin000", "TomatoClock", None)
-        self.work_time: int = None
-        self.break_time: int = None
+def load_settings() -> Tuple[int, int]:
+    if os.path.exists(SETTINGS_FILE):
+        try:
+            with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                work = int(data.get("work_time", DEFAULT_WORK))
+                break_ = int(data.get("break_time", DEFAULT_BREAK))
+                return work, break_
+        except Exception:
+            pass
+    return DEFAULT_WORK, DEFAULT_BREAK
 
-    def __enter__(self) -> Self:
-        self.work_time = self._settings.value("work-time") or 25 * 60
-        self.break_time = self._settings.value("break-time") or 5 * 60
-        return self
 
-    def __exit__(self, _type, _value, _traceback):
-        self._settings.setValue("work-time", self.work_time)
-        self._settings.setValue("break-time", self.break_time)
+def save_settings(work_time: int, break_time: int) -> None:
+    data = {"work_time": work_time, "break_time": break_time}
+    os.makedirs(os.path.dirname(SETTINGS_FILE), exist_ok=True)
+    with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f)
