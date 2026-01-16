@@ -145,10 +145,11 @@ class TomatoClock(QWidget):
 
 
 if __name__ == "__main__":
-    icon_path = resources.files(tomatoclock) / "tomato.ico"
+    icon_obj = resources.files(tomatoclock) / "tomato.ico"
 
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon(str(icon_path)))
+    with resources.as_file(icon_obj) as icon_path:
+        app.setWindowIcon(QIcon(str(icon_path)))
     window = TomatoClock()
     window.show()
     sys.exit(app.exec())
